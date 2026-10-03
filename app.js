@@ -4,8 +4,18 @@ import { hiraganaData, katakanaData } from './data.js';
 let currentAlphabet = 'hiragana'; 
 let kanaData = []; 
 let currentCard = null;
+let currentMode = 'manual';
+const btnManual = document.getElementById("btn-manual");
+const btnQuiz = document.getElementById("btn-quiz");
+const manualContainer = document.getElementById("manual-container");
+const quizContainer = document.getElementById("quiz-container");
 
 // Находим новые кнопки
+const quizButtons = document.querySelectorAll(".quiz-option");
+const startScreen = document.getElementById("start-screen");
+const studyScreen = document.getElementById("study-screen");
+const startBtn = document.getElementById("start-btn");
+const backBtn = document.getElementById("back-btn");
 const btnHira = document.getElementById("btn-hira");
 const btnKata = document.getElementById("btn-kata");
 const charElement = document.getElementById("character");
@@ -38,26 +48,24 @@ function saveData() {
 // Функция переключения азбуки
 function switchAlphabet(alphabet, activeBtn, inactiveBtn) {
     currentAlphabet = alphabet;
-    
-    // Меняем визуальный стиль кнопок
     activeBtn.classList.add("active");
     inactiveBtn.classList.remove("active");
-    
-    // Загружаем нужную базу, очищаем интерфейс и показываем карточку
-    loadData();
-    answerInput.style.display = "inline-block";
-    checkBtn.style.display = "inline-block";
-    showNextCard();
+}
+
+function switchMode(mode, activeBtn, inactiveBtn) {
+    currentMode = mode;
+    activeBtn.classList.add("active");
+    inactiveBtn.classList.remove("active");
 }
 
 // Слушатели для кнопок
 btnHira.addEventListener("click", () => switchAlphabet('hiragana', btnHira, btnKata));
 btnKata.addEventListener("click", () => switchAlphabet('katakana', btnKata, btnHira));
+btnManual.addEventListener("click", () => switchMode('manual', btnManual, btnQuiz));
+btnQuiz.addEventListener("click", () => switchMode('quiz', btnQuiz, btnManual));
 
 // Запуск при загрузке страницы (по умолчанию Хирагана)
 btnHira.classList.add("active");
-loadData();
-showNextCard();
 
 // 3. Отбираем карточки, время которых уже подошло
 function getDueCards() {
@@ -65,25 +73,67 @@ function getDueCards() {
     return kanaData.filter(card => card.next_review <= now);
 }
 
+// ОБНОВЛЕННАЯ ФУНКЦИЯ ПОКАЗА КАРТОЧКИ
 function showNextCard() {
     const dueCards = getDueCards();
     
-    // Если на сегодня карточек больше нет
     if (dueCards.length === 0) {
-        charElement.textContent = "";
-        feedbackElement.textContent = "На сегодня всё! Выученные карточки появятся позже.";
-        answerInput.style.display = "none";
-        checkBtn.style.display = "none";
+        charElement.textContent = "🎉";
+        feedbackElement.textContent = "На сегодня всё! Отличная работа.";
+        manualContainer.style.display = "none";
+        quizContainer.style.display = "none";
         return;
     }
 
-    // Берем случайную карточку из тех, что ждут повторения
     currentCard = dueCards[Math.floor(Math.random() * dueCards.length)];
-    
     charElement.textContent = currentCard.char;
-    answerInput.value = "";
     feedbackElement.textContent = "";
-    answerInput.focus();
+
+    if (currentMode === 'manual') {
+        answerInput.value = "";
+        answerInput.focus();
+    } else {
+        setupQuiz(); // Если режим Quiz, генерируем кнопки
+    }
+}
+
+// НОВАЯ ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ 4 ВАРИАНТОВ ОТВЕТА
+function setupQuiz() {
+    // 1. Создаем массив с правильным ответом
+    let options = [currentCard.romaji];
+
+    // Вычисляем максимальное количество кнопок (4, но не больше, чем всего символов в азбуке)
+    const maxOptions = Math.min(4, kanaData.length);
+
+    // 2. Добавляем случайные НЕПРАВИЛЬНЫЕ ответы
+    while (options.length < maxOptions) {
+        let randomCard = kanaData[Math.floor(Math.random() * kanaData.length)];
+        
+        if (!options.includes(randomCard.romaji)) {
+            options.push(randomCard.romaji);
+        }
+    }
+
+    // 3. Перемешиваем массив, чтобы правильный ответ не был всегда первым
+    options.sort(() => Math.random() - 0.5);
+
+    // 4. Назначаем текст кнопкам и вешаем проверку ответа
+    quizButtons.forEach((btn, index) => {
+        if (index < maxOptions) {
+            btn.style.display = "block"; // Показываем кнопку
+            btn.textContent = options[index];
+            
+            btn.onclick = () => {
+                if (btn.textContent === currentCard.romaji) {
+                    handleCorrect();
+                } else {
+                    handleIncorrect();
+                }
+            };
+        } else {
+            btn.style.display = "none"; // Скрываем лишние кнопки, если символов меньше 4
+        }
+    });
 }
 
 // 4. Математика интервалов 
@@ -110,26 +160,62 @@ function processAnswer(isCorrect) {
     
     saveData(); // Сохраняем обновленные данные в браузер
 }
-
-function checkAnswer() {
-    const userAnswer = answerInput.value.trim().toLowerCase();
-
-    if (userAnswer === currentCard.romaji) {
-        feedbackElement.textContent = "Правильно!";
-        feedbackElement.style.color = "green";
-        processAnswer(true);
-        setTimeout(showNextCard, 1000);
+// ПЕРЕХОД МЕЖДУ ОКНАМИ
+startBtn.addEventListener("click", () => {
+    // 1. Загружаем базу на основе выбранной азбуки
+    loadData(); 
+    
+    // 2. Скрываем меню, показываем экран обучения
+    startScreen.style.display = "none";
+    studyScreen.style.display = "block";
+    
+    // 3. Показываем нужный блок ввода в зависимости от режима
+    if (currentMode === 'manual') {
+        manualContainer.style.display = "block";
+        quizContainer.style.display = "none";
     } else {
-        feedbackElement.textContent = `Ошибка! Правильный ответ: ${currentCard.romaji}.`;
-        feedbackElement.style.color = "red";
-        processAnswer(false);
-        setTimeout(showNextCard, 2000);
+        manualContainer.style.display = "none";
+        quizContainer.style.display = "grid";
+    }
+    
+    // 4. Показываем первую карточку
+    showNextCard();
+});
+
+// Кнопка "В меню" (Назад)
+backBtn.addEventListener("click", () => {
+    studyScreen.style.display = "none";
+    startScreen.style.display = "block";
+    feedbackElement.textContent = ""; // Очищаем текст ошибки/успеха
+});
+
+// ОБЩИЕ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
+function handleCorrect() {
+    feedbackElement.textContent = "Правильно! 🎉";
+    feedbackElement.style.color = "green";
+    processAnswer(true);
+    setTimeout(showNextCard, 1000);
+}
+
+function handleIncorrect() {
+    feedbackElement.textContent = `Ошибка! Правильный ответ: ${currentCard.romaji}`;
+    feedbackElement.style.color = "red";
+    processAnswer(false);
+    setTimeout(showNextCard, 2000);
+}
+
+// Проверка для ручного ввода осталась почти такой же
+function checkManualAnswer() {
+    const userAnswer = answerInput.value.trim().toLowerCase();
+    if (userAnswer === currentCard.romaji) {
+        handleCorrect();
+    } else {
+        handleIncorrect();
     }
 }
 
-checkBtn.addEventListener("click", checkAnswer);
+// Обновляем слушатели для ручного ввода
+checkBtn.addEventListener("click", checkManualAnswer);
 answerInput.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") checkAnswer();
+    if (event.key === "Enter") checkManualAnswer();
 });
-
-showNextCard();

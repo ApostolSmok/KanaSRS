@@ -7,6 +7,58 @@ body {
     background-color: #f0f2f5;
     margin: 0;
 }
+#start-screen {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.setting-group {
+    margin-bottom: 25px;
+}
+
+.setting-group p {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #444;
+}
+
+#start-btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+#start-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Кнопка "Назад" на экране обучения */
+#back-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+    display: block;
+    text-align: left;
+}
+
+#back-btn:hover {
+    color: #000;
+}
+
 #card {
     background: white;
     padding: 40px;
@@ -51,5 +103,46 @@ button {
 /* Класс для активной (выбранной) кнопки */
 #alphabet-selector button.active {
     background-color: #007bff;
+    color: white;
+}
+
+#quiz-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки одинаковой ширины */
+    gap: 10px; /* Отступ между кнопками */
+    margin-top: 20px;
+}
+.quiz-option {
+    padding: 15px;
+    font-size: 20px;
+    background-color: #f8f9fa;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+.quiz-option:hover {
+    background-color: #e2e6ea;
+    border-color: #007bff;
+}
+
+/* Стили для контейнера переключателя режимов */
+#mode-selector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Базовый вид кнопок режима (неактивные) */
+#mode-selector button {
+    background-color: #ddd;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 0 5px;
+    transition: 0.2s;
+}
+
+/* Вид нажатой (активной) кнопки режима */
+#mode-selector button.active {
+    background-color: #28a745; /* Зеленый цвет, чтобы визуально отделить от синих кнопок азбуки */
     color: white;
 }

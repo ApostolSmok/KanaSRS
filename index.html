@@ -7,18 +7,52 @@
 </head>
 <body>
     <div id="app">
-        <div id="alphabet-selector">
-            <button id="btn-hira">Хирагана</button>
-            <button id="btn-kata">Катакана</button>
+    <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
+    <div id="start-screen">
+        <h2>Настройки обучения</h2>
+        
+        <div class="setting-group">
+            <p>Выберите азбуку:</p>
+            <div id="alphabet-selector">
+                <button id="btn-hira" class="active">Хирагана</button>
+                <button id="btn-kata">Катакана</button>
+            </div>
         </div>
 
+        <div class="setting-group">
+            <p>Выберите режим:</p>
+            <div id="mode-selector">
+                <button id="btn-manual" class="active">✍️ Ввод текста</button>
+                <button id="btn-quiz">🎯 Тест</button>
+            </div>
+        </div>
+
+        <button id="start-btn">Начать!</button>
+    </div>
+
+    <!-- ЭКРАН 2: ОБУЧЕНИЕ (Изначально скрыт) -->
+    <div id="study-screen" style="display: none;">
+        <button id="back-btn">⬅ В меню</button>
+        
         <div id="card">
             <h1 id="character">?</h1>
-            <input type="text" id="answer" autocomplete="off" placeholder="Введите ромадзи (например, a)">
-            <button id="check-btn">Проверить</button>
+            
+            <div id="manual-container">
+                <input type="text" id="answer" autocomplete="off" placeholder="Введите ромадзи">
+                <button id="check-btn">Проверить</button>
+            </div>
+
+            <div id="quiz-container" style="display: none;">
+                <button class="quiz-option"></button>
+                <button class="quiz-option"></button>
+                <button class="quiz-option"></button>
+                <button class="quiz-option"></button>
+            </div>
+
             <p id="feedback"></p>
         </div>
     </div>
-    <script type="module" src="app.js"></script>
+</div>
+<script type="module" src="app.js"></script>
 </body>
 </html>
