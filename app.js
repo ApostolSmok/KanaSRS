@@ -23,6 +23,85 @@ const answerInput = document.getElementById("answer");
 const checkBtn = document.getElementById("check-btn");
 const feedbackElement = document.getElementById("feedback");
 
+// --- СЛОВАРЬ ПЕРЕВОДОВ ---
+const translations = {
+    ru: {
+        title: "Настройки обучения",
+        alphabetText: "Выберите азбуку:",
+        hiraBtn: "Хирагана",
+        kataBtn: "Катакана",
+        modeText: "Выберите режим:",
+        manualBtn: "✍️ Ввод текста",
+        quizBtn: "🎯 Тест",
+        startBtn: "Начать!",
+        backBtn: "⬅ В меню",
+        placeholder: "Введите ромадзи",
+        checkBtn: "Проверить",
+        feedbackDone: "На сегодня всё! Отличная работа.",
+        feedbackCorrect: "Правильно!",
+        feedbackError: "Ошибка! Правильный ответ: "
+    },
+    en: {
+        title: "Study Settings",
+        alphabetText: "Select alphabet:",
+        hiraBtn: "Hiragana",
+        kataBtn: "Katakana",
+        modeText: "Select mode:",
+        manualBtn: "✍️ Text Input",
+        quizBtn: "🎯 Quiz",
+        startBtn: "Start!",
+        backBtn: "⬅ Back to Menu",
+        placeholder: "Enter romaji",
+        checkBtn: "Check",
+        feedbackDone: "That's all for today! Great job.",
+        feedbackCorrect: "Correct!",
+        feedbackError: "Wrong! Correct answer: "
+    }
+};
+
+// Язык по умолчанию (проверяем, сохранял ли пользователь ранее)
+let currentLang = localStorage.getItem('kanaLang') || 'en';
+
+// Кнопки языка
+const btnLangRu = document.getElementById("lang-ru");
+const btnLangEn = document.getElementById("lang-en");
+
+function applyLanguage() {
+    const t = translations[currentLang];
+    
+    // Обновляем текст в HTML
+    document.getElementById("ui-title").textContent = t.title;
+    document.getElementById("ui-alphabet-text").textContent = t.alphabetText;
+    btnHira.textContent = t.hiraBtn;
+    btnKata.textContent = t.kataBtn;
+    document.getElementById("ui-mode-text").textContent = t.modeText;
+    btnManual.textContent = t.manualBtn;
+    btnQuiz.textContent = t.quizBtn;
+    startBtn.textContent = t.startBtn;
+    backBtn.textContent = t.backBtn;
+    answerInput.placeholder = t.placeholder;
+    checkBtn.textContent = t.checkBtn;
+
+    // Меняем активные кнопки языка
+    if (currentLang === 'ru') {
+        btnLangRu.classList.add("active");
+        btnLangEn.classList.remove("active");
+    } else {
+        btnLangEn.classList.add("active");
+        btnLangRu.classList.remove("active");
+    }
+    
+    // Сохраняем выбор
+    localStorage.setItem('kanaLang', currentLang);
+}
+
+// Слушатели для смены языка
+btnLangRu.addEventListener("click", () => { currentLang = 'ru'; applyLanguage(); });
+btnLangEn.addEventListener("click", () => { currentLang = 'en'; applyLanguage(); });
+
+// Применяем язык при старте страницы
+applyLanguage();
+
 // Функция загрузки данных
 function loadData() {
     // Используется динамический ключ
@@ -78,8 +157,8 @@ function showNextCard() {
     const dueCards = getDueCards();
     
     if (dueCards.length === 0) {
-        charElement.textContent = "";
-        feedbackElement.textContent = "На сегодня всё! Отличная работа.";
+        charElement.textContent = " ";
+        feedbackElement.textContent = translations[currentLang].feedbackDone;
         manualContainer.style.display = "none";
         quizContainer.style.display = "none";
         return;
@@ -119,19 +198,38 @@ function setupQuiz() {
 
     // 4. Назначаем текст кнопкам и вешаем проверку ответа
     quizButtons.forEach((btn, index) => {
+        // Включаем кнопки и СБРАСЫВАЕМ ЦВЕТА от предыдущей карточки
+        btn.disabled = false;
+        btn.classList.remove("correct", "wrong"); 
+
         if (index < maxOptions) {
-            btn.style.display = "block"; // Показываем кнопку
+            btn.style.display = "block";
             btn.textContent = options[index];
             
             btn.onclick = () => {
+                // Блокируем все кнопки
+                quizButtons.forEach(b => b.disabled = true);
+
                 if (btn.textContent === currentCard.romaji) {
-                    handleCorrect();
+                    // Правильно: красим текущую кнопку в зеленый
+                    btn.classList.add("correct");
+                    handleCorrect(false); // Вызываем без текста
                 } else {
-                    handleIncorrect();
+                    // Ошибка: красим текущую в красный
+                    btn.classList.add("wrong");
+                    
+                    // Находим правильную кнопку и подсвечиваем ее зеленым
+                    quizButtons.forEach(b => {
+                        if (b.textContent === currentCard.romaji) {
+                            b.classList.add("correct");
+                        }
+                    });
+                    
+                    handleIncorrect(false); // Вызываем без текста
                 }
             };
         } else {
-            btn.style.display = "none"; // Скрываем лишние кнопки, если символов меньше 4
+            btn.style.display = "none";
         }
     });
 }
@@ -190,27 +288,38 @@ backBtn.addEventListener("click", () => {
 });
 
 // ОБЩИЕ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
-function handleCorrect() {
-    feedbackElement.textContent = "Правильно!";
-    feedbackElement.style.color = "green";
+function handleCorrect(showText = true) {
+    if (showText) {
+        feedbackElement.textContent = translations[currentLang].feedbackCorrect;
+        feedbackElement.style.color = "green";
+    } else {
+        feedbackElement.textContent = ""; 
+    }
     processAnswer(true);
     setTimeout(showNextCard, 1000);
 }
 
-function handleIncorrect() {
-    feedbackElement.textContent = `Ошибка! Правильный ответ: ${currentCard.romaji}`;
-    feedbackElement.style.color = "red";
+function handleIncorrect(showText = true) {
+    if (showText) {
+        feedbackElement.textContent = translations[currentLang].feedbackError + currentCard.romaji;
+        feedbackElement.style.color = "red";
+    } else {
+        feedbackElement.textContent = ""; 
+    }
     processAnswer(false);
-    setTimeout(showNextCard, 2000);
+    setTimeout(showNextCard, 2000); 
 }
 
 // Проверка для ручного ввода
 function checkManualAnswer() {
     const userAnswer = answerInput.value.trim().toLowerCase();
-    if (userAnswer === currentCard.romaji) {
-        handleCorrect();
+    const isCorrect = (userAnswer === currentCard.romaji) || 
+                      (currentCard.alt && currentCard.alt.includes(userAnswer));
+
+    if (isCorrect) {
+        handleCorrect(true); 
     } else {
-        handleIncorrect();
+        handleIncorrect(true); 
     }
 }
 

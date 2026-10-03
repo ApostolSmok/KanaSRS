@@ -6,13 +6,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
+    <div id="language-selector">
+    <button id="lang-ru" class="active">RU</button>
+    <button id="lang-en">EN</button>
+</div>
+
+<div id="app">
     <!-- ЭКРАН 1: ГЛАВНОЕ МЕНЮ -->
     <div id="start-screen">
-        <h2>Настройки обучения</h2>
+        <h2 id="ui-title">Настройки обучения</h2>
         
         <div class="setting-group">
-            <p>Выберите азбуку:</p>
+            <p id="ui-alphabet-text">Выберите азбуку:</p>
             <div id="alphabet-selector">
                 <button id="btn-hira" class="active">Хирагана</button>
                 <button id="btn-kata">Катакана</button>
@@ -20,17 +25,17 @@
         </div>
 
         <div class="setting-group">
-            <p>Выберите режим:</p>
+            <p id="ui-mode-text">Выберите режим:</p>
             <div id="mode-selector">
                 <button id="btn-manual" class="active">✍️ Ввод текста</button>
-                <button id="btn-quiz">🎯 Тест</button>
+                <button id="btn-quiz">🎯 Тест (4 варианта)</button>
             </div>
         </div>
 
         <button id="start-btn">Начать!</button>
     </div>
 
-    <!-- ЭКРАН 2: ОБУЧЕНИЕ (Изначально скрыт) -->
+    <!-- ЭКРАН 2: ОБУЧЕНИЕ -->
     <div id="study-screen" style="display: none;">
         <button id="back-btn">⬅ В меню</button>
         

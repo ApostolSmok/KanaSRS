@@ -64,7 +64,7 @@ export const hiraganaData = [
     
     // W & N
     { id: "h_wa", char: "わ", romaji: "wa", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
-    { id: "h_wo", char: "を", romaji: "wo", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
+    { id: "h_wo", char: "を", romaji: "o", alt: ["wo"], interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "h_n",  char: "ん", romaji: "n", interval: 0, ease: 2.5, reps: 0, next_review: 0 }
 ];
 
@@ -132,6 +132,6 @@ export const katakanaData = [
     
     // W & N
     { id: "k_wa", char: "ワ", romaji: "wa", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
-    { id: "k_wo", char: "ヲ", romaji: "wo", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
+    { id: "k_wo", char: "ヲ", romaji: "o", alt: ["wo"], interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "k_n",  char: "ン", romaji: "n", interval: 0, ease: 2.5, reps: 0, next_review: 0 }
 ];

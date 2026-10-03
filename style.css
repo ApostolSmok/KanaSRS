@@ -65,6 +65,10 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     text-align: center;
+    
+    width: 400px; 
+    max-width: 90vw; /* Оставляем адаптивность для мобильных телефонов */
+    box-sizing: border-box;
 }
 #character {
     font-size: 80px;
@@ -83,7 +87,7 @@ button {
 #feedback {
     margin-top: 20px;
     font-weight: bold;
-    min-height: 20px;
+    min-height: 24px; 
 }
 #alphabet-selector {
     margin-bottom: 20px;
@@ -145,4 +149,42 @@ button {
 #mode-selector button.active {
     background-color: #28a745; /* Зеленый цвет, чтобы визуально отделить от синих кнопок азбуки */
     color: white;
+}
+
+/* Переключатель языка */
+#language-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#language-selector button {
+    background-color: transparent;
+    color: #666;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-left: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#language-selector button.active {
+    background-color: #444;
+    color: white;
+    border-color: #444;
+}
+
+.quiz-option.correct {
+    background-color: #1fd249 !important;
+    color: white !important;
+    border-color: #1fd249 !important;
+    opacity: 1 !important; /* Делаем цвет ярким, перебивая тусклость заблокированной кнопки */
+}
+
+.quiz-option.wrong {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+    opacity: 0.8 !important;
 }
