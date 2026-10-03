@@ -33,3 +33,23 @@ button {
     font-weight: bold;
     min-height: 20px;
 }
+#alphabet-selector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#alphabet-selector button {
+    background-color: #ddd;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 0 5px;
+    transition: 0.2s;
+}
+
+/* Класс для активной (выбранной) кнопки */
+#alphabet-selector button.active {
+    background-color: #007bff;
+    color: white;
+}
