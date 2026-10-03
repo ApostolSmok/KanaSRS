@@ -25,7 +25,7 @@ const feedbackElement = document.getElementById("feedback");
 
 // Функция загрузки данных
 function loadData() {
-    // Используем динамический ключ, например: kanaAppDB_hiragana
+    // Используется динамический ключ
     const storageKey = 'kanaAppDB_' + currentAlphabet;
     const savedData = localStorage.getItem(storageKey);
     
@@ -33,7 +33,7 @@ function loadData() {
         kanaData = JSON.parse(savedData);
     } else {
         // Если прогресса нет, берем оригинал из data.js
-        // ВАЖНО: делаем глубокую копию, чтобы не менять исходный массив
+        // делаем глубокую копию, чтобы не менять исходный массив
         const sourceData = currentAlphabet === 'hiragana' ? hiraganaData : katakanaData;
         kanaData = JSON.parse(JSON.stringify(sourceData)); 
     }
@@ -78,7 +78,7 @@ function showNextCard() {
     const dueCards = getDueCards();
     
     if (dueCards.length === 0) {
-        charElement.textContent = "🎉";
+        charElement.textContent = "";
         feedbackElement.textContent = "На сегодня всё! Отличная работа.";
         manualContainer.style.display = "none";
         quizContainer.style.display = "none";
@@ -97,15 +97,15 @@ function showNextCard() {
     }
 }
 
-// НОВАЯ ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ 4 ВАРИАНТОВ ОТВЕТА
+// ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ 4 ВАРИАНТОВ ОТВЕТА
 function setupQuiz() {
     // 1. Создаем массив с правильным ответом
     let options = [currentCard.romaji];
 
-    // Вычисляем максимальное количество кнопок (4, но не больше, чем всего символов в азбуке)
+    // Вычисляем максимальное количество кнопок 
     const maxOptions = Math.min(4, kanaData.length);
 
-    // 2. Добавляем случайные НЕПРАВИЛЬНЫЕ ответы
+    // 2. Добавляем случайные неправильные ответы
     while (options.length < maxOptions) {
         let randomCard = kanaData[Math.floor(Math.random() * kanaData.length)];
         
@@ -182,7 +182,7 @@ startBtn.addEventListener("click", () => {
     showNextCard();
 });
 
-// Кнопка "В меню" (Назад)
+// Кнопка Назад
 backBtn.addEventListener("click", () => {
     studyScreen.style.display = "none";
     startScreen.style.display = "block";
@@ -191,7 +191,7 @@ backBtn.addEventListener("click", () => {
 
 // ОБЩИЕ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
 function handleCorrect() {
-    feedbackElement.textContent = "Правильно! 🎉";
+    feedbackElement.textContent = "Правильно!";
     feedbackElement.style.color = "green";
     processAnswer(true);
     setTimeout(showNextCard, 1000);
@@ -204,7 +204,7 @@ function handleIncorrect() {
     setTimeout(showNextCard, 2000);
 }
 
-// Проверка для ручного ввода осталась почти такой же
+// Проверка для ручного ввода
 function checkManualAnswer() {
     const userAnswer = answerInput.value.trim().toLowerCase();
     if (userAnswer === currentCard.romaji) {
