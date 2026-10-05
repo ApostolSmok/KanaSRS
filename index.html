@@ -29,6 +29,7 @@
             <div id="mode-selector">
                 <button id="btn-manual" class="active">✍️ Ввод текста</button>
                 <button id="btn-quiz">🎯 Тест (4 варианта)</button>
+                <button id="btn-learn">🃏 Карточки</button>
             </div>
         </div>
 
@@ -42,6 +43,25 @@
         <div id="card">
             <h1 id="character">?</h1>
             
+            <div id="learning-container" style="display: none;">
+            <div id="flashcard" class="flashcard">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <h1 id="learn-char">?</h1>
+                        <p class="flip-hint" id="ui-flip-hint">Нажми, чтобы перевернуть</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <h1 id="learn-romaji">?</h1>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="learning-buttons" class="learning-buttons" style="display: none;">
+                <button id="btn-learn-wrong" class="btn-wrong">✖ Не помню</button>
+                <button id="btn-learn-correct" class="btn-correct">✔ Помню</button>
+            </div>
+        </div>
+
             <div id="manual-container">
                 <input type="text" id="answer" autocomplete="off" placeholder="Введите ромадзи">
                 <button id="check-btn">Проверить</button>

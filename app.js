@@ -22,6 +22,14 @@ const charElement = document.getElementById("character");
 const answerInput = document.getElementById("answer");
 const checkBtn = document.getElementById("check-btn");
 const feedbackElement = document.getElementById("feedback");
+const btnLearn = document.getElementById("btn-learn");
+const learningContainer = document.getElementById("learning-container");
+const flashcard = document.getElementById("flashcard");
+const learnChar = document.getElementById("learn-char");
+const learnRomaji = document.getElementById("learn-romaji");
+const learningButtons = document.getElementById("learning-buttons");
+const btnLearnWrong = document.getElementById("btn-learn-wrong");
+const btnLearnCorrect = document.getElementById("btn-learn-correct");
 
 // --- СЛОВАРЬ ПЕРЕВОДОВ ---
 const translations = {
@@ -39,7 +47,11 @@ const translations = {
         checkBtn: "Проверить",
         feedbackDone: "На сегодня всё! Отличная работа.",
         feedbackCorrect: "Правильно!",
-        feedbackError: "Ошибка! Правильный ответ: "
+        feedbackError: "Ошибка! Правильный ответ: ",
+        learnBtn: "🃏 Карточки",
+        flipHint: "Нажми, чтобы перевернуть",
+        btnRemember: "✔ Помню",
+        btnForget: "✖ Не помню"
     },
     en: {
         title: "Study Settings",
@@ -55,7 +67,11 @@ const translations = {
         checkBtn: "Check",
         feedbackDone: "That's all for today! Great job.",
         feedbackCorrect: "Correct!",
-        feedbackError: "Wrong! Correct answer: "
+        feedbackError: "Wrong! Correct answer: ",
+        learnBtn: "🃏 Flashcards",
+        flipHint: "Tap to flip",
+        btnRemember: "✔ I remember",
+        btnForget: "✖ I forgot"
     }
 };
 
@@ -81,6 +97,12 @@ function applyLanguage() {
     backBtn.textContent = t.backBtn;
     answerInput.placeholder = t.placeholder;
     checkBtn.textContent = t.checkBtn;
+
+    btnLearn.textContent = t.learnBtn;
+    document.getElementById("ui-flip-hint").textContent = t.flipHint;
+    btnLearnCorrect.textContent = t.btnRemember;
+    btnLearnWrong.textContent = t.btnForget;
+
 
     // Меняем активные кнопки языка
     if (currentLang === 'ru') {
@@ -131,17 +153,38 @@ function switchAlphabet(alphabet, activeBtn, inactiveBtn) {
     inactiveBtn.classList.remove("active");
 }
 
-function switchMode(mode, activeBtn, inactiveBtn) {
+function switchMode(mode, activeBtn, inactiveBtn1, inactiveBtn2) {
     currentMode = mode;
+
+    // Визуальное переключение кнопок
     activeBtn.classList.add("active");
-    inactiveBtn.classList.remove("active");
+    inactiveBtn1.classList.remove("active");
+    inactiveBtn2.classList.remove("active");
+
+    if (currentMode === 'manual') {
+        manualContainer.style.display = "block";
+        quizContainer.style.display = "none";
+        learningContainer.style.display = "none";
+        charElement.style.display = "block"; // Показываем обычный символ
+    } else if (currentMode === 'quiz') {
+        manualContainer.style.display = "none";
+        quizContainer.style.display = "grid";
+        learningContainer.style.display = "none";
+        charElement.style.display = "block"; // Показываем обычный символ
+    } else if (currentMode === 'learning') {
+        manualContainer.style.display = "none";
+        quizContainer.style.display = "none";
+        learningContainer.style.display = "block"; // Показываем флэш-карточку
+        charElement.style.display = "none"; // Прячем обычный символ
+    }
 }
 
 // Слушатели для кнопок
 btnHira.addEventListener("click", () => switchAlphabet('hiragana', btnHira, btnKata));
 btnKata.addEventListener("click", () => switchAlphabet('katakana', btnKata, btnHira));
-btnManual.addEventListener("click", () => switchMode('manual', btnManual, btnQuiz));
-btnQuiz.addEventListener("click", () => switchMode('quiz', btnQuiz, btnManual));
+btnManual.addEventListener("click", () => switchMode('manual', btnManual, btnQuiz, btnLearn));
+btnQuiz.addEventListener("click", () => switchMode('quiz', btnQuiz, btnManual, btnLearn));
+btnLearn.addEventListener("click", () => switchMode('learning', btnLearn, btnManual, btnQuiz));
 
 // Запуск при загрузке страницы (по умолчанию Хирагана)
 btnHira.classList.add("active");
@@ -168,11 +211,20 @@ function showNextCard() {
     charElement.textContent = currentCard.char;
     feedbackElement.textContent = "";
 
-    if (currentMode === 'manual') {
+    if (currentMode === 'learning') {
+        // Заполняем флэш-карточку
+        learnChar.textContent = currentCard.char;
+        learnRomaji.textContent = currentCard.romaji;
+        // Сбрасываем переворот и прячем кнопки ответа
+        flashcard.classList.remove("flipped");
+        learningButtons.style.display = "none";
+    } else if (currentMode === 'manual') {
+        charElement.textContent = currentCard.char;
         answerInput.value = "";
         answerInput.focus();
     } else {
-        setupQuiz(); // Если режим Quiz, генерируем кнопки
+        charElement.textContent = currentCard.char;
+        setupQuiz(); 
     }
 }
 
@@ -259,7 +311,8 @@ function processAnswer(isCorrect) {
     saveData(); // Сохраняем обновленные данные в браузер
 }
 // ПЕРЕХОД МЕЖДУ ОКНАМИ
-startBtn.addEventListener("click", () => {
+startBtn.addEventListener("click", () => { // тут логика переключения классов active, как у других кнопок; 
+                                        // currentMode = 'learning'; });
     // 1. Загружаем базу на основе выбранной азбуки
     loadData(); 
     
@@ -271,9 +324,18 @@ startBtn.addEventListener("click", () => {
     if (currentMode === 'manual') {
         manualContainer.style.display = "block";
         quizContainer.style.display = "none";
-    } else {
+        learningContainer.style.display = "none";
+        charElement.style.display = "block"; // Показываем обычный символ
+    } else if (currentMode === 'quiz') {
         manualContainer.style.display = "none";
         quizContainer.style.display = "grid";
+        learningContainer.style.display = "none";
+        charElement.style.display = "block"; // Показываем обычный символ
+    } else if (currentMode === 'learning') {
+        manualContainer.style.display = "none";
+        quizContainer.style.display = "none";
+        learningContainer.style.display = "block"; // Показываем флэш-карточку
+        charElement.style.display = "none"; // Прячем обычный символ
     }
     
     // 4. Показываем первую карточку
@@ -287,6 +349,24 @@ backBtn.addEventListener("click", () => {
     feedbackElement.textContent = ""; // Очищаем текст ошибки/успеха
 });
 
+
+flashcard.addEventListener("click", () => {
+    // Переворачиваем только если карточка еще не перевернута
+    if (!flashcard.classList.contains("flipped")) {
+        flashcard.classList.add("flipped");
+        learningButtons.style.display = "flex"; // Показываем кнопки "Помню / Не помню"
+    }
+});
+
+// Кнопки ответа
+btnLearnCorrect.addEventListener("click", () => {
+    handleCorrect(false); // Засчитываем правильный ответ (без текста)
+});
+
+btnLearnWrong.addEventListener("click", () => {
+    handleIncorrect(false); // Засчитываем ошибку (без текста)
+});
+
 // ОБЩИЕ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
 function handleCorrect(showText = true) {
     if (showText) {
@@ -296,7 +376,10 @@ function handleCorrect(showText = true) {
         feedbackElement.textContent = ""; 
     }
     processAnswer(true);
-    setTimeout(showNextCard, 1000);
+
+
+    const delay = (currentMode === 'learning') ? 150 : 1000;
+    setTimeout(showNextCard, delay);
 }
 
 function handleIncorrect(showText = true) {
@@ -307,7 +390,10 @@ function handleIncorrect(showText = true) {
         feedbackElement.textContent = ""; 
     }
     processAnswer(false);
-    setTimeout(showNextCard, 2000); 
+
+
+    const delay = (currentMode === 'learning') ? 150 : 2000;
+    setTimeout(showNextCard, delay); 
 }
 
 // Проверка для ручного ввода

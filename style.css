@@ -188,3 +188,78 @@ button {
     border-color: #dc3545 !important;
     opacity: 0.8 !important;
 }
+
+.flashcard {
+    background-color: transparent;
+    width: 100%;
+    height: 200px;
+    perspective: 1000px; /* Создает 3D эффект глубины */
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+
+/* Класс, который JS будет добавлять для переворота */
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Скрывает "изнанку" при вращении */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    background-color: #e9ecef;
+}
+
+.flashcard-front h1, .flashcard-back h1 {
+    font-size: 80px;
+    margin: 0;
+}
+
+.flip-hint {
+    font-size: 14px;
+    color: #888;
+    margin-top: 10px;
+}
+
+.learning-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.learning-buttons button {
+    flex: 1;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    color: white;
+}
+
+.btn-wrong { background-color: #dc3545; }
+.btn-wrong:hover { background-color: #c82333; }
+
+.btn-correct { background-color: #28a745; }
+.btn-correct:hover { background-color: #218838; }
