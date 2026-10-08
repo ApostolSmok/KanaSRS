@@ -217,7 +217,8 @@ function showNextCard() {
         learnRomaji.textContent = currentCard.romaji;
         // Сбрасываем переворот и прячем кнопки ответа
         flashcard.classList.remove("flipped");
-        learningButtons.style.display = "none";
+        learningButtons.style.display = "flex";
+
     } else if (currentMode === 'manual') {
         charElement.textContent = currentCard.char;
         answerInput.value = "";
@@ -303,8 +304,7 @@ function processAnswer(isCorrect) {
     }
 
     // Высчитываем будущую дату показа (текущее время + дни в миллисекундах)
-    // Для тестирования сейчас интервал считается в МИНУТАХ. 
-    // Замени "60 * 1000" на "24 * 60 * 60 * 1000", когда захочешь реальные дни.
+    // "60 * 1000" на "24 * 60 * 60 * 1000" (реальные дни).
     const INTERVAL_IN_MS = 10 * 1000; 
     currentCard.next_review = Date.now() + (currentCard.interval * INTERVAL_IN_MS);
     
@@ -351,20 +351,30 @@ backBtn.addEventListener("click", () => {
 
 
 flashcard.addEventListener("click", () => {
-    // Переворачиваем только если карточка еще не перевернута
-    if (!flashcard.classList.contains("flipped")) {
-        flashcard.classList.add("flipped");
-        learningButtons.style.display = "flex"; // Показываем кнопки "Помню / Не помню"
-    }
+    flashcard.classList.toggle("flipped");
 });
+
+function handleLearningAnswer(isCorrect) {
+    // 1. Начинаем переворот карточки обратно (если она была перевернута)
+    flashcard.classList.remove("flipped");
+    
+    // 2. Ждем 300 миллисекунд, пока она визуально крутится, и меняем символ
+    setTimeout(() => {
+        if (isCorrect) {
+            handleCorrect(false); 
+        } else {
+            handleIncorrect(false); 
+        }
+    }, 300);
+}
 
 // Кнопки ответа
 btnLearnCorrect.addEventListener("click", () => {
-    handleCorrect(false); // Засчитываем правильный ответ (без текста)
+    handleLearningAnswer(true);
 });
 
 btnLearnWrong.addEventListener("click", () => {
-    handleIncorrect(false); // Засчитываем ошибку (без текста)
+    handleLearningAnswer(false);
 });
 
 // ОБЩИЕ ФУНКЦИИ ДЛЯ ПРОВЕРКИ
@@ -378,7 +388,7 @@ function handleCorrect(showText = true) {
     processAnswer(true);
 
 
-    const delay = (currentMode === 'learning') ? 150 : 1000;
+    const delay = (currentMode === 'learning') ? 0 : 1000;
     setTimeout(showNextCard, delay);
 }
 
@@ -392,7 +402,7 @@ function handleIncorrect(showText = true) {
     processAnswer(false);
 
 
-    const delay = (currentMode === 'learning') ? 150 : 2000;
+    const delay = (currentMode === 'learning') ? 0 : 2000;
     setTimeout(showNextCard, delay); 
 }
 
