@@ -409,8 +409,11 @@ function handleIncorrect(showText = true) {
 // Проверка для ручного ввода
 function checkManualAnswer() {
     const userAnswer = answerInput.value.trim().toLowerCase();
-    const isCorrect = (userAnswer === currentCard.romaji) || 
-                      (currentCard.alt && currentCard.alt.includes(userAnswer));
+    const isCorrect = 
+    (userAnswer === currentCard.romaji) || // срабатывает для азбуки
+    (currentCard.meaning && userAnswer === currentCard.meaning) || // проверка перевода кандзи
+    (currentCard.kunyomi && userAnswer === currentCard.kunyomi) || // проверка кунного чтения
+    (currentCard.onyomi && userAnswer === currentCard.onyomi);     // проверка онного чтения
 
     if (isCorrect) {
         handleCorrect(true); 
