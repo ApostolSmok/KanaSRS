@@ -13,8 +13,11 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     text-align: center;
+    
+    /* ИСПРАВЛЕНИЯ ЗДЕСЬ: */
     width: 100%;
-    max-width: 400px;
+    max-width: 90vw; /* Делаем адаптивным, как и окно карточек */
+    box-sizing: border-box; /* Отступы теперь включены в ширину */
 }
 
 .setting-group {
@@ -89,9 +92,14 @@ button {
     font-weight: bold;
     min-height: 24px; 
 }
-#alphabet-selector {
+#alphabet-selector, #mode-selector {
     margin-bottom: 20px;
-    text-align: center;
+    
+    /* Включаем гибкую сетку с переносом: */
+    display: flex;
+    flex-wrap: wrap; /* Разрешаем кнопкам переноситься на новую строку */
+    justify-content: center; /* Центрируем кнопки */
+    gap: 10px; /* Аккуратные отступы между кнопками */
 }
 
 #alphabet-selector button {
@@ -100,7 +108,7 @@ button {
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    margin: 0 5px;
+    margin: 0; /* Убрали старый margin, так как теперь есть gap */
     transition: 0.2s;
 }
 
@@ -141,7 +149,7 @@ button {
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    margin: 0 5px;
+    margin: 0; /* Убрали старый margin, так как теперь есть gap */
     transition: 0.2s;
 }
 
