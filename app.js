@@ -30,6 +30,12 @@ const learnRomaji = document.getElementById("learn-romaji");
 const learningButtons = document.getElementById("learning-buttons");
 const btnLearnWrong = document.getElementById("btn-learn-wrong");
 const btnLearnCorrect = document.getElementById("btn-learn-correct");
+const btnKanji = document.getElementById("btn-kanji");
+const kanjiCreator = document.getElementById("kanji-creator");
+const newKanjiChar = document.getElementById("new-kanji-char");
+const newKanjiMeaning = document.getElementById("new-kanji-meaning");
+const btnAddKanji = document.getElementById("btn-add-kanji");
+const kanjiFeedback = document.getElementById("kanji-feedback");
 
 // --- СЛОВАРЬ ПЕРЕВОДОВ ---
 const translations = {
@@ -51,7 +57,14 @@ const translations = {
         learnBtn: "🃏 Карточки",
         flipHint: "Нажми, чтобы перевернуть",
         btnRemember: "✔ Помню",
-        btnForget: "✖ Не помню"
+        btnForget: "✖ Не помню",
+
+        kanjiBtn: "Кандзи",
+        kanjiTitle: "Создать свою карточку:",
+        kanjiCharPlace: "Иероглиф (напр. 水)",
+        kanjiMeanPlace: "Чтение/перевод (напр. mizu - вода)",
+        kanjiAddBtn: "➕ Добавить в колоду",
+        kanjiAdded: "Добавлено: "
     },
     en: {
         title: "Study Settings",
@@ -71,7 +84,14 @@ const translations = {
         learnBtn: "🃏 Flashcards",
         flipHint: "Tap to flip",
         btnRemember: "✔ I remember",
-        btnForget: "✖ I forgot"
+        btnForget: "✖ I forgot",
+
+        kanjiBtn: "Kanji",
+        kanjiTitle: "Create custom card:",
+        kanjiCharPlace: "Kanji (e.g. 水)",
+        kanjiMeanPlace: "Reading/Meaning (e.g. mizu - water)",
+        kanjiAddBtn: "➕ Add to deck",
+        kanjiAdded: "Added: "
     }
 };
 
@@ -103,6 +123,12 @@ function applyLanguage() {
     btnLearnCorrect.textContent = t.btnRemember;
     btnLearnWrong.textContent = t.btnForget;
 
+    btnKanji.textContent = t.kanjiBtn;
+    document.getElementById("ui-kanji-title").textContent = t.kanjiTitle;
+    newKanjiChar.placeholder = t.kanjiCharPlace;
+    newKanjiMeaning.placeholder = t.kanjiMeanPlace;
+    btnAddKanji.textContent = t.kanjiAddBtn;
+
 
     // Меняем активные кнопки языка
     if (currentLang === 'ru') {
@@ -126,16 +152,17 @@ applyLanguage();
 
 // Функция загрузки данных
 function loadData() {
-    // Используется динамический ключ
     const storageKey = 'kanaAppDB_' + currentAlphabet;
     const savedData = localStorage.getItem(storageKey);
     
     if (savedData) {
         kanaData = JSON.parse(savedData);
     } else {
-        // Если прогресса нет, берем оригинал из data.js
-        // делаем глубокую копию, чтобы не менять исходный массив
-        const sourceData = currentAlphabet === 'hiragana' ? hiraganaData : katakanaData;
+        // Если это кандзи, стартовая база пустая. Иначе берем азбуку.
+        let sourceData = [];
+        if (currentAlphabet === 'hiragana') sourceData = hiraganaData;
+        if (currentAlphabet === 'katakana') sourceData = katakanaData;
+        
         kanaData = JSON.parse(JSON.stringify(sourceData)); 
     }
 }
@@ -147,10 +174,20 @@ function saveData() {
 }
 
 // Функция переключения азбуки
-function switchAlphabet(alphabet, activeBtn, inactiveBtn) {
+function switchAlphabet(alphabet, activeBtn, inactiveBtn1, inactiveBtn2) {
     currentAlphabet = alphabet;
     activeBtn.classList.add("active");
-    inactiveBtn.classList.remove("active");
+    inactiveBtn1.classList.remove("active");
+    inactiveBtn2.classList.remove("active");
+    
+    // Показываем редактор ТОЛЬКО для Кандзи
+    if (alphabet === 'kanji') {
+        kanjiCreator.style.display = "block";
+    } else {
+        kanjiCreator.style.display = "none";
+    }
+    
+    loadData(); // Сразу подгружаем базу при переключении вкладки в меню
 }
 
 function switchMode(mode, activeBtn, inactiveBtn1, inactiveBtn2) {
@@ -180,8 +217,11 @@ function switchMode(mode, activeBtn, inactiveBtn1, inactiveBtn2) {
 }
 
 // Слушатели для кнопок
-btnHira.addEventListener("click", () => switchAlphabet('hiragana', btnHira, btnKata));
-btnKata.addEventListener("click", () => switchAlphabet('katakana', btnKata, btnHira));
+btnHira.addEventListener("click", () => switchAlphabet('hiragana', btnHira, btnKata, btnKanji));
+btnKata.addEventListener("click", () => switchAlphabet('katakana', btnKata, btnHira, btnKanji));
+btnKanji.addEventListener("click", () => switchAlphabet('kanji', btnKanji, btnHira, btnKata));
+
+
 btnManual.addEventListener("click", () => switchMode('manual', btnManual, btnQuiz, btnLearn));
 btnQuiz.addEventListener("click", () => switchMode('quiz', btnQuiz, btnManual, btnLearn));
 btnLearn.addEventListener("click", () => switchMode('learning', btnLearn, btnManual, btnQuiz));
@@ -194,6 +234,33 @@ function getDueCards() {
     const now = Date.now();
     return kanaData.filter(card => card.next_review <= now);
 }
+
+// Логика добавления своего кандзи
+btnAddKanji.addEventListener("click", () => {
+    const char = newKanjiChar.value.trim();
+    const meaning = newKanjiMeaning.value.trim();
+    
+    if (char === "" || meaning === "") return;
+    
+    const newCard = {
+        id: "kanji_" + Date.now(), // Уникальный ID на основе текущего времени
+        char: char,
+        romaji: meaning, // Мы хитро используем поле romaji для задней части флэш-карточки
+        interval: 0,
+        ease: 2.5,
+        reps: 0,
+        next_review: 0 // Сразу готово к изучению
+    };
+    
+    kanaData.push(newCard);
+    saveData();
+    
+    // Очищаем поля и показываем сообщение об успехе
+    newKanjiChar.value = "";
+    newKanjiMeaning.value = "";
+    kanjiFeedback.textContent = translations[currentLang].kanjiAdded + char;
+    setTimeout(() => kanjiFeedback.textContent = "", 2000);
+});
 
 // ОБНОВЛЕННАЯ ФУНКЦИЯ ПОКАЗА КАРТОЧКИ
 function showNextCard() {
@@ -303,12 +370,13 @@ function processAnswer(isCorrect) {
         currentCard.ease = Math.max(1.3, currentCard.ease - 0.15); // Сложность падает, но не ниже 1.3
     }
 
-    // Высчитываем будущую дату показа (текущее время + дни в миллисекундах)
-    // "60 * 1000" на "24 * 60 * 60 * 1000" (реальные дни).
-    const INTERVAL_IN_MS = 10 * 1000; 
-    currentCard.next_review = Date.now() + (currentCard.interval * INTERVAL_IN_MS);
+    // РАЗДЕЛЕНИЕ ВРЕМЕНИ:
+    // Если азбука - множитель 1 минута (60 * 1000)
+    // Если кандзи - множитель 1 день (24 часа * 60 мин * 60 сек * 1000 мс)
+    const timeMultiplier = (currentAlphabet === 'kanji') ? (24 * 60 * 60 * 1000) : (60 * 1000); 
     
-    saveData(); // Сохраняем обновленные данные в браузер
+    currentCard.next_review = Date.now() + (currentCard.interval * timeMultiplier);
+    saveData();
 }
 // ПЕРЕХОД МЕЖДУ ОКНАМИ
 startBtn.addEventListener("click", () => { // тут логика переключения классов active, как у других кнопок; 
