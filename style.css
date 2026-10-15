@@ -14,10 +14,9 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     text-align: center;
     
-    /* ИСПРАВЛЕНИЯ ЗДЕСЬ: */
     width: 100%;
-    max-width: 90vw; /* Делаем адаптивным, как и окно карточек */
-    box-sizing: border-box; /* Отступы теперь включены в ширину */
+    max-width: 90vw; 
+    box-sizing: border-box; 
 }
 
 .setting-group {
@@ -46,7 +45,6 @@ body {
     background-color: #0056b3;
 }
 
-/* Кнопка "Назад" на экране обучения */
 #back-btn {
     background: none;
     border: none;
@@ -70,7 +68,7 @@ body {
     text-align: center;
     
     width: 400px; 
-    max-width: 90vw; /* Оставляем адаптивность для мобильных телефонов */
+    max-width: 90vw; 
     box-sizing: border-box;
 }
 #character {
@@ -95,11 +93,10 @@ button {
 #alphabet-selector, #mode-selector {
     margin-bottom: 20px;
     
-    /* Включаем гибкую сетку с переносом: */
     display: flex;
-    flex-wrap: wrap; /* Разрешаем кнопкам переноситься на новую строку */
-    justify-content: center; /* Центрируем кнопки */
-    gap: 10px; /* Аккуратные отступы между кнопками */
+    flex-wrap: wrap;
+    justify-content: center; 
+    gap: 10px; 
 }
 
 #alphabet-selector button {
@@ -108,11 +105,10 @@ button {
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    margin: 0; /* Убрали старый margin, так как теперь есть gap */
+    margin: 0; 
     transition: 0.2s;
 }
 
-/* Класс для активной (выбранной) кнопки */
 #alphabet-selector button.active {
     background-color: #007bff;
     color: white;
@@ -120,8 +116,8 @@ button {
 
 #quiz-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Две колонки одинаковой ширины */
-    gap: 10px; /* Отступ между кнопками */
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
     margin-top: 20px;
 }
 .quiz-option {
@@ -136,30 +132,26 @@ button {
     border-color: #007bff;
 }
 
-/* Стили для контейнера переключателя режимов */
 #mode-selector {
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* Базовый вид кнопок режима (неактивные) */
 #mode-selector button {
     background-color: #ddd;
     color: black;
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    margin: 0; /* Убрали старый margin, так как теперь есть gap */
+    margin: 0; 
     transition: 0.2s;
 }
 
-/* Вид нажатой (активной) кнопки режима */
 #mode-selector button.active {
-    background-color: #28a745; /* Зеленый цвет, чтобы визуально отделить от синих кнопок азбуки */
+    background-color: #28a745; 
     color: white;
 }
 
-/* Переключатель языка */
 #language-selector {
     position: absolute;
     top: 20px;
@@ -187,7 +179,7 @@ button {
     background-color: #1fd249 !important;
     color: white !important;
     border-color: #1fd249 !important;
-    opacity: 1 !important; /* Делаем цвет ярким, перебивая тусклость заблокированной кнопки */
+    opacity: 1 !important; 
 }
 
 .quiz-option.wrong {
@@ -201,7 +193,7 @@ button {
     background-color: transparent;
     width: 100%;
     height: 200px;
-    perspective: 1000px; /* Создает 3D эффект глубины */
+    perspective: 1000px; 
     margin-bottom: 20px;
     cursor: pointer;
 }
@@ -215,7 +207,6 @@ button {
     transform-style: preserve-3d;
 }
 
-/* Класс, который JS будет добавлять для переворота */
 .flashcard.flipped .flashcard-inner {
     transform: rotateY(180deg);
 }
@@ -224,7 +215,7 @@ button {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* Скрывает "изнанку" при вращении */
+    backface-visibility: hidden; 
     display: flex;
     flex-direction: column;
     justify-content: center;

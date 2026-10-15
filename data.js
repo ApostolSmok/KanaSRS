@@ -1,7 +1,7 @@
 // data.js
 
 export const hiraganaData = [
-    // Гласные
+    
     { id: "h_a", char: "あ", romaji: "a", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "h_i", char: "い", romaji: "i", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "h_u", char: "う", romaji: "u", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
@@ -69,7 +69,7 @@ export const hiraganaData = [
 ];
 
 export const katakanaData = [
-    // Гласные
+    
     { id: "k_a", char: "ア", romaji: "a", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "k_i", char: "イ", romaji: "i", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "k_u", char: "ウ", romaji: "u", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
@@ -134,17 +134,4 @@ export const katakanaData = [
     { id: "k_wa", char: "ワ", romaji: "wa", interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "k_wo", char: "ヲ", romaji: "o", alt: ["wo"], interval: 0, ease: 2.5, reps: 0, next_review: 0 },
     { id: "k_n",  char: "ン", romaji: "n", interval: 0, ease: 2.5, reps: 0, next_review: 0 }
-];
-
-export const kanjiData = [
-    { 
-        id: "kanji_mizu", 
-        char: "水", 
-        meaning: "вода", 
-        onyomi: "sui", 
-        kunyomi: "mizu", 
-        // стандартные параметры SRS
-        interval: 0, ease: 2.5, reps: 0, next_review: 0 
-    }
-    // ... остальные кандзи
 ];
