@@ -35,6 +35,8 @@ const newKanjiChar = document.getElementById("new-kanji-char");
 const newKanjiMeaning = document.getElementById("new-kanji-meaning");
 const btnAddKanji = document.getElementById("btn-add-kanji");
 const kanjiFeedback = document.getElementById("kanji-feedback");
+const btnViewDeck = document.getElementById("btn-view-deck");
+const deckList = document.getElementById("deck-list");
 
 // translation
 const translations = {
@@ -63,7 +65,9 @@ const translations = {
         kanjiCharPlace: "Иероглиф (напр. 水)",
         kanjiMeanPlace: "Чтение/перевод (напр. mizu - вода)",
         kanjiAddBtn: "➕ Добавить в колоду",
-        kanjiAdded: "Добавлено: "
+        kanjiAdded: "Добавлено: ",
+        kanjiViewBtn: "📜 Посмотреть колоду",
+        kanjiEmpty: "Колода пуста."
     },
     en: {
         title: "Study Settings",
@@ -90,7 +94,9 @@ const translations = {
         kanjiCharPlace: "Kanji (e.g. 水)",
         kanjiMeanPlace: "Reading/Meaning (e.g. mizu - water)",
         kanjiAddBtn: "➕ Add to deck",
-        kanjiAdded: "Added: "
+        kanjiAdded: "Added: ",
+        kanjiViewBtn: "📜 View deck",
+        kanjiEmpty: "Deck is empty."
     }
 };
 
@@ -127,6 +133,7 @@ function applyLanguage() {
     newKanjiChar.placeholder = t.kanjiCharPlace;
     newKanjiMeaning.placeholder = t.kanjiMeanPlace;
     btnAddKanji.textContent = t.kanjiAddBtn;
+    btnViewDeck.textContent = t.kanjiViewBtn;
 
     if (currentLang === 'ru') {
         btnLangRu.classList.add("active");
@@ -174,6 +181,8 @@ function switchAlphabet(alphabet, activeBtn, inactiveBtn1, inactiveBtn2) {
     activeBtn.classList.add("active");
     inactiveBtn1.classList.remove("active");
     inactiveBtn2.classList.remove("active");
+
+    deckList.style.display = "none";
     
     if (alphabet === 'kanji') {
         kanjiCreator.style.display = "block";
@@ -259,6 +268,60 @@ btnAddKanji.addEventListener("click", () => {
     kanjiFeedback.textContent = translations[currentLang].kanjiAdded + char;
     setTimeout(() => kanjiFeedback.textContent = "", 2000);
 });
+
+// open/close deck list
+btnViewDeck.addEventListener("click", () => {
+    if (deckList.style.display === "none") {
+        deckList.style.display = "block";
+        renderDeckList(); // draw flashcards
+    } else {
+        deckList.style.display = "none";
+    }
+});
+
+// render deck
+function renderDeckList() {
+    deckList.innerHTML = ""; // clear list from old writings
+    const t = translations[currentLang];
+    
+    if (kanaData.length === 0) {
+        deckList.innerHTML = `<p style="font-size: 14px; color: #666; text-align: center;">${t.kanjiEmpty}</p>`;
+        return;
+    }
+
+    // for each flashcard create a stroke
+    kanaData.forEach((card, index) => {
+        const item = document.createElement("div");
+        item.style.display = "flex";
+        item.style.justifyContent = "space-between";
+        item.style.alignItems = "center";
+        item.style.padding = "5px 0";
+        item.style.borderBottom = "1px solid #eee";
+
+        const text = document.createElement("span");
+        text.textContent = `${card.char} — ${card.romaji}`;
+        text.style.fontSize = "16px";
+
+        // delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑️";
+        deleteBtn.style.background = "none";
+        deleteBtn.style.border = "none";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.style.fontSize = "16px";
+        
+        // logic of deleting 
+        deleteBtn.onclick = () => {
+            kanaData.splice(index, 1); 
+            saveData(); 
+            renderDeckList(); 
+        };
+
+        item.appendChild(text);
+        item.appendChild(deleteBtn);
+        deckList.appendChild(item);
+    });
+}
 
 // func for showing up new flashcards
 function showNextCard() {
