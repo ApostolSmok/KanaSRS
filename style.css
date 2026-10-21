@@ -134,8 +134,13 @@ button {
     background-color: #e2e6ea;
     border-color: #007bff;
 }
-.quiz-option:focus {
-    outline: none;
+
+.quiz-option:focus,
+.quiz-option:active {
+    outline: none !important;
+    background-color: #f8f9fa !important; 
+    border-color: #ddd !important;     
+    box-shadow: none !important;
 }
 
 #mode-selector {
