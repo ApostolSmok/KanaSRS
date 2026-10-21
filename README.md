@@ -1,4 +1,4 @@
-# Kana & Kanji SRS
+# Kana & Kanji SRS (Spaced Repetition System)
 
 A minimalist Single Page Application (SPA) and Progressive Web App (PWA) designed for learning Japanese Kana (Hiragana and Katakana) and Kanji characters using a Spaced Repetition System (SRS) inspired by the SM-2 algorithm.
 
