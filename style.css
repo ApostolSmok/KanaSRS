@@ -126,10 +126,16 @@ button {
     background-color: #f8f9fa;
     border: 2px solid #ddd;
     border-radius: 8px;
+
+    outline: none; 
+    -webkit-tap-highlight-color: transparent;
 }
 .quiz-option:hover {
     background-color: #e2e6ea;
     border-color: #007bff;
+}
+.quiz-option:focus {
+    outline: none;
 }
 
 #mode-selector {
@@ -262,3 +268,13 @@ button {
 
 .btn-correct { background-color: #28a745; }
 .btn-correct:hover { background-color: #218838; }
+
+#answer:disabled,
+#check-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#answer:disabled {
+    background-color: #e9ecef;
+}

@@ -347,6 +347,10 @@ function showNextCard() {
 
     } else if (currentMode === 'manual') {
         charElement.textContent = currentCard.char;
+
+        answerInput.disabled = false;
+        checkBtn.disabled = false;
+
         answerInput.value = "";
         answerInput.focus();
     } else {
@@ -381,6 +385,7 @@ function setupQuiz() {
             btn.textContent = options[index];
             
             btn.onclick = () => {
+                btn.blur();
                 // blocking all btns
                 quizButtons.forEach(b => b.disabled = true);
 
@@ -522,7 +527,10 @@ function checkManualAnswer() {
     (userAnswer === currentCard.romaji) || 
     (currentCard.meaning && userAnswer === currentCard.meaning) || 
     (currentCard.kunyomi && userAnswer === currentCard.kunyomi) || 
-    (currentCard.onyomi && userAnswer === currentCard.onyomi);     
+    (currentCard.onyomi && userAnswer === currentCard.onyomi);    
+    
+    answerInput.disabled = true;
+    checkBtn.disabled = true;
 
     if (isCorrect) {
         handleCorrect(true); 
