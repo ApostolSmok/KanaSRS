@@ -29,36 +29,33 @@ body {
     color: #444;
 }
 
-#start-btn {
+#start-btn, #check-btn, #btn-add-kanji {
     background-color: #007bff;
     color: white;
-    font-size: 18px;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
     width: 100%;
     margin-top: 10px;
-    transition: 0.2s;
 }
 
-#start-btn:hover {
+#start-btn:hover, #check-btn:hover, #btn-add-kanji:hover {
     background-color: #0056b3;
 }
 
-#back-btn {
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    font-size: 16px;
-    margin-bottom: 20px;
-    display: block;
-    text-align: left;
+#btn-view-deck {
+    background-color: #6c757d;
+    color: white;
+    width: 100%;
+    margin-top: 5px;
 }
 
-#back-btn:hover {
-    color: #000;
+#back-btn {
+    background: transparent;
+    box-shadow: none;
+    color: #666;
+    padding: 0;
+    margin-bottom: 20px;
 }
+#back-btn:hover { color: #000; }
 
 #card {
     background: white;
@@ -81,10 +78,23 @@ input {
     margin-right: 10px;
 }
 button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08), 0 0 0 1px #e9ecef;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
+button:active:not(:disabled) {
+    transform: scale(0.96);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
 #feedback {
     margin-top: 20px;
     font-weight: bold;
@@ -99,19 +109,21 @@ button {
     gap: 10px; 
 }
 
-#alphabet-selector button {
-    background-color: #ddd;
-    color: black;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    margin: 0; 
-    transition: 0.2s;
+#alphabet-selector button, #mode-selector button {
+    background-color: #f8f9fa;
+    color: #444;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 0;
 }
-
 #alphabet-selector button.active {
     background-color: #007bff;
     color: white;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+#mode-selector button.active {
+    background-color: #28a745;
+    color: white;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
 }
 
 #quiz-container {
@@ -121,53 +133,33 @@ button {
     margin-top: 20px;
 }
 .quiz-option {
-    padding: 16px;
+    padding: 18px;
     font-size: 20px;
     font-weight: 500;
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: none;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05), 0 0 0 2px #e9ecef;
     cursor: pointer;
-    transition: all 0.15s ease;
     
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 .quiz-option:hover {
-    background-color: #f5f7fa;
-    border-color: #b0c4de;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.15), 0 0 0 2px #007bff;
+    background-color: #f8f9fa;
 }
 .quiz-option:active {
-    transform: translateY(0);
-    background-color: #eceff1;
+    transform: scale(0.97);
+    background-color: #f1f3f5;
 }
-.quiz-option:focus {
-    outline: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-#mode-selector {
-    margin-bottom: 20px;
-    text-align: center;
+.quiz-option:focus,
+.quiz-option:focus-visible {
+    outline: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05), 0 0 0 2px #e9ecef;
 }
 
-#mode-selector button {
-    background-color: #ddd;
-    color: black;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    margin: 0; 
-    transition: 0.2s;
-}
-
-#mode-selector button.active {
-    background-color: #28a745; 
-    color: white;
-}
 
 #language-selector {
     position: absolute;
@@ -268,10 +260,8 @@ button {
     flex: 1;
     padding: 15px;
     font-size: 18px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
     color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .btn-wrong { background-color: #dc3545; }
