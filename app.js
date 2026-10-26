@@ -38,6 +38,10 @@ const kanjiFeedback = document.getElementById("kanji-feedback");
 const btnViewDeck = document.getElementById("btn-view-deck");
 const deckList = document.getElementById("deck-list");
 
+const btnShowTable = document.getElementById("btn-show-table");
+const tableModal = document.getElementById("table-modal");
+const closeTableBtn = document.getElementById("close-table-btn");
+
 // translation
 const translations = {
     ru: {
@@ -67,7 +71,10 @@ const translations = {
         kanjiAddBtn: "➕ Добавить в колоду",
         kanjiAdded: "Добавлено: ",
         kanjiViewBtn: "📜 Посмотреть колоду",
-        kanjiEmpty: "Колода пуста."
+        kanjiEmpty: "Колода пуста.",
+
+        showTableBtn: "🔠 Таблица символов",
+        closeBtnText: "✖ Закрыть"
     },
     en: {
         title: "Study Settings",
@@ -96,7 +103,10 @@ const translations = {
         kanjiAddBtn: "➕ Add to deck",
         kanjiAdded: "Added: ",
         kanjiViewBtn: "📜 View deck",
-        kanjiEmpty: "Deck is empty."
+        kanjiEmpty: "Deck is empty.",
+
+        showTableBtn: "🔠 Kana Table",
+        closeBtnText: "✖ Close"
     }
 };
 
@@ -134,6 +144,9 @@ function applyLanguage() {
     newKanjiMeaning.placeholder = t.kanjiMeanPlace;
     btnAddKanji.textContent = t.kanjiAddBtn;
     btnViewDeck.textContent = t.kanjiViewBtn;
+
+    btnShowTable.textContent = t.showTableBtn;
+    closeTableBtn.textContent = t.closeBtnText;
 
     if (currentLang === 'ru') {
         btnLangRu.classList.add("active");
@@ -542,4 +555,71 @@ function checkManualAnswer() {
 checkBtn.addEventListener("click", checkManualAnswer);
 answerInput.addEventListener("keypress", function(event) {
     if (event.key === "Enter") checkManualAnswer();
+});
+
+const gojuonLayout = [
+    ['a', 'あ ア a', 'い イ i', 'う ウ u', 'え エ e', 'お オ o'],
+    ['ka', 'か カ ka', 'き キ ki', 'く ク ku', 'け ケ ke', 'こ コ ko'],
+    ['sa', 'さ サ sa', 'し シ shi', 'す ス su', 'せ セ se', 'そ ソ so'],
+    ['ta', 'た タ ta', 'ち チ chi', 'つ ツ tsu', 'て テ te', 'と ト to'],
+    ['na', 'な ナ na', 'に ニ ni', 'ぬ ヌ nu', 'ね ネ ne', 'の ノ no'],
+    ['ha', 'は ハ ha', 'ひ ヒ hi', 'ふ フ fu', 'へ ヘ he', 'ほ ホ ho'],
+    ['ma', 'ま マ ma', 'み ミ mi', 'む ム mu', 'め メ me', 'も モ mo'],
+    ['ya', 'や ヤ ya', '', 'ゆ ユ yu', '', 'よ ヨ yo'],
+    ['ra', 'ら ラ ra', 'り リ ri', 'る ル ru', 'れ レ re', 'ろ ロ ro'],
+    ['wa', 'わ ワ wa', '', '', '', 'を ヲ o'],
+    ['n', 'ん ン n', '', '', '', '']
+];
+
+function renderGojuonTable() {
+    const container = document.getElementById("table-container");
+    if (container.innerHTML !== "") return; // Рендерим только один раз
+
+    const grid = document.createElement("div");
+    grid.className = "kana-grid";
+
+    ['', 'a', 'i', 'u', 'e', 'o'].forEach(text => {
+        const cell = document.createElement("div");
+        cell.className = "kana-header";
+        cell.textContent = text;
+        grid.appendChild(cell);
+    });
+    gojuonLayout.forEach(row => {
+        row.forEach((cellData, index) => {
+            const cell = document.createElement("div");
+            if (index === 0) {
+                cell.className = "kana-row-label";
+                cell.textContent = cellData;
+            } else if (!cellData) {
+                cell.className = "kana-cell empty";
+            } else {
+                cell.className = "kana-cell";
+                const parts = cellData.split(' ');
+                cell.innerHTML = `
+                    <div class="kana-chars">
+                        <span class="kana-hira">${parts[0]}</span>
+                        <span class="kana-kata">${parts[1]}</span>
+                    </div>
+                    <div class="kana-romaji">${parts[2]}</div>
+                `;
+            }
+            grid.appendChild(cell);
+        });
+    });
+    container.appendChild(grid);
+}
+
+btnShowTable.addEventListener("click", () => {
+    renderGojuonTable();
+    tableModal.style.display = "flex";
+});
+
+closeTableBtn.addEventListener("click", () => {
+    tableModal.style.display = "none";
+});
+
+tableModal.addEventListener("click", (e) => {
+    if (e.target === tableModal) {
+        tableModal.style.display = "none";
+    }
 });
