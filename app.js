@@ -557,6 +557,8 @@ answerInput.addEventListener("keypress", function(event) {
     if (event.key === "Enter") checkManualAnswer();
 });
 
+// table with all gojuon symbols
+
 const gojuonLayout = [
     ['a', 'あ ア a', 'い イ i', 'う ウ u', 'え エ e', 'お オ o'],
     ['ka', 'か カ ka', 'き キ ki', 'く ク ku', 'け ケ ke', 'こ コ ko'],
@@ -573,7 +575,7 @@ const gojuonLayout = [
 
 function renderGojuonTable() {
     const container = document.getElementById("table-container");
-    if (container.innerHTML !== "") return; // Рендерим только один раз
+    if (container.innerHTML !== "") return; 
 
     const grid = document.createElement("div");
     grid.className = "kana-grid";
